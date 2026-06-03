@@ -60,7 +60,7 @@
         .nav-item.active { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
 
         /* Main Content */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 2rem; scroll-behavior: smooth; }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: 2rem; scroll-behavior: smooth; }
 
         /* Top Header & Compact Filters */
         .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
@@ -219,6 +219,23 @@
             .heatmap-row { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 10px; }
             .heatmap-month { min-width: 110px; }
             .day { width: 12px; height: 12px; }
+
+            /* Form Fixes for Mobile */
+            .form-grid { 
+                grid-template-columns: 1fr !important; 
+                gap: 1rem; 
+            }
+            
+            /* Ensure iOS Safari doesn't push inputs out */
+            input[type="date"], 
+            input[type="time"], 
+            input[type="text"], 
+            input[type="number"], 
+            select {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
