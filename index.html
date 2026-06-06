@@ -105,15 +105,15 @@
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03); margin-bottom: 2rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); }
+        .card { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03); margin-bottom: 1.25rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); }
 
         /* KPIs */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
         .stat-value { font-size: 1.8rem; font-weight: 700; margin-top: 0.5rem; }
 
-        /* Charts */
-        .charts-grid { display: grid; gap: 1.5rem; margin-bottom: 2rem; }
+        /* Charts Layout */
+        .charts-grid { display: grid; gap: 1rem; margin-bottom: 1.25rem; }
         .chart-container { position: relative; height: 220px; width: 100%; }
 
         /* Heatmap Rows */
@@ -128,9 +128,16 @@
         .day.tier-red-1 { background-color: #fca5a5; } .day.tier-red-2 { background-color: #ef4444; } .day.tier-red-3 { background-color: #b91c1c; }
         .day.tier-green-1 { background-color: #6ee7b7; } .day.tier-green-2 { background-color: #10b981; } .day.tier-green-3 { background-color: #047857; }
         [data-theme="dark"] .day.tier-red-1 { background-color: #991b1b; } [data-theme="dark"] .day.tier-red-2 { background-color: #dc2626; }
-        [data-theme="dark"] .day.tier-green-1 { background-color: #065f46; } [data-theme="dark"] .day.tier-green-2 { background-color: #10b981; }
         .day.empty { background-color: transparent; }
         .heatmap-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 1.5rem; }
+
+        /* Calendar Styles */
+        .calendar-day-cell { background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; min-height: 95px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.2s; }
+        .calendar-day-cell:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .calendar-day-cell.empty { background: transparent; border: none; cursor: default; }
+        .calendar-day-num { font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
+        .calendar-day-pl { font-size: 0.85rem; font-weight: 700; text-align: center; }
+        .calendar-day-trades { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
 
         /* Forms & Tables */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;}
@@ -183,7 +190,7 @@
         /* File Actions */
         .header-actions { display: flex; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; width: 100%; }
 
-        /* Modal */
+        /* Modal Layout */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .modal-content { margin: auto; display: block; max-width: 95%; max-height: 90vh; border-radius: 12px; position: relative; top: 50%; transform: translateY(-50%);}
         .close { position: absolute; top: 20px; right: 20px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 1001;}
@@ -220,13 +227,11 @@
             .heatmap-month { min-width: 110px; }
             .day { width: 12px; height: 12px; }
 
-            /* Form Fixes for Mobile */
             .form-grid { 
                 grid-template-columns: 1fr !important; 
                 gap: 1rem; 
             }
             
-            /* Ensure iOS Safari doesn't push inputs out */
             input[type="date"], 
             input[type="time"], 
             input[type="text"], 
@@ -252,6 +257,10 @@
         <div class="nav-item" onclick="switchTab('log')" id="nav-log">
             <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
             <span class="nav-text">Trade Log</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('calendar')" id="nav-calendar">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span class="nav-text">Calendar</span>
         </div>
         <div class="nav-item" onclick="switchTab('gallery')" id="nav-gallery">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -290,32 +299,77 @@
         <section id="view-dashboard" class="view-section active">
             
             <div class="kpi-grid">
-                <div class="card stat-card"><div class="stat-label">Total Trades</div><div class="stat-value" id="kpi-trades">0</div></div>
-                <div class="card stat-card"><div class="stat-label">Win Rate</div><div class="stat-value" id="kpi-winrate">0%</div></div>
-                <div class="card stat-card"><div class="stat-label">Net P/L</div><div class="stat-value" id="kpi-net">₹0.00</div></div>
-                <div class="card stat-card"><div class="stat-label">Highest Profit</div><div class="stat-value" id="kpi-high" style="color: var(--profit)">₹0.00</div></div>
-                <div class="card stat-card"><div class="stat-label">Highest Loss</div><div class="stat-value" id="kpi-loss" style="color: var(--loss)">₹0.00</div></div>
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                        Total Trades
+                    </div>
+                    <div class="stat-value" id="kpi-trades">0</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        Win Rate
+                    </div>
+                    <div class="stat-value" id="kpi-winrate">0%</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                        Net P/L
+                    </div>
+                    <div class="stat-value" id="kpi-net">₹0.00</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                        Highest Profit
+                    </div>
+                    <div class="stat-value" id="kpi-high" style="color: var(--profit)">₹0.00</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+                        Highest Loss
+                    </div>
+                    <div class="stat-value" id="kpi-loss" style="color: var(--loss)">₹0.00</div>
+                </div>
             </div>
 
-            <div class="charts-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                <div class="card">
-                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Equity Curve</h3>
-                    <div class="chart-container" style="height: 220px;"><canvas id="equityChart"></canvas></div>
+            <div class="charts-grid" style="grid-template-columns: 3fr 1fr;">
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight: 700;">Cumulative Performance Curve</h3>
+                    <div class="chart-container" style="height: 320px;"><canvas id="equityChart"></canvas></div>
                 </div>
-                <div class="card">
+                <div class="card" style="margin-bottom: 0;">
                     <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Hourly Win %</h3>
-                    <div class="chart-container" style="height: 220px;"><canvas id="hourlyWinChart"></canvas></div>
+                    <div class="chart-container" style="height: 320px;"><canvas id="hourlyWinChart"></canvas></div>
                 </div>
             </div>
 
             <div class="charts-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
                 <div class="card">
-                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Long vs Short</h3>
-                    <div class="chart-container" style="height: 220px;"><canvas id="pieChart"></canvas></div>
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight:700;">Most Common Mistakes Made</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="mistakesChart"></canvas></div>
                 </div>
                 <div class="card">
                     <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Exits (Results)</h3>
-                    <div class="chart-container" style="height: 220px;"><canvas id="resultChart"></canvas></div>
+                    <div class="chart-container" style="height: 280px;"><canvas id="resultChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="charts-grid" style="grid-template-columns: 1fr 3fr;">
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Long vs Short</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="pieChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight:700;">Daily P&L Performance (Last 30 Days)</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="dailyPLChart"></canvas></div>
                 </div>
             </div>
 
@@ -327,6 +381,16 @@
                     <div style="display:flex; align-items:center; gap:5px;"><div class="day tier-green-3"></div> Max Profit</div>
                     <div style="display:flex; align-items:center; gap:5px;"><div class="day" style="background: var(--heatmap-empty)"></div> No Trades</div>
                 </div>
+            </div>
+        </section>
+
+        <section id="view-calendar" class="view-section">
+            <div class="card">
+                <h3 id="calendar-title-header" style="margin-bottom: 1.5rem; text-align: center; font-weight: 700; color: var(--text-main);">Trading Calendar</h3>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 12px;">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <div id="calendar-grid-wrapper" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;"></div>
             </div>
         </section>
 
@@ -371,6 +435,27 @@
                     <div class="form-group">
                         <label>Screenshot <span id="edit-img-notice" style="display:none; color:var(--warning); font-size:0.75rem;">(Leaves old image if blank)</span></label>
                         <input type="file" id="screenshot" accept="image/*">
+                    </div>
+
+                    <div class="form-group full-width" style="background: rgba(99,102,241,0.04); padding: 1rem; border-radius: 8px; border: 1px dashed var(--border);">
+                        <label style="color: var(--primary); font-weight: 700;">Mistakes Made Execution Flags</label>
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                            <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="trade-mistakes" value="No Mistake" style="width: auto; cursor: pointer;"> No Mistake
+                            </label>
+                            <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="trade-mistakes" value="Exited Too Early" style="width: auto; cursor: pointer;"> Exited Too Early
+                            </label>
+                            <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="trade-mistakes" value="FOMO Entry" style="width: auto; cursor: pointer;"> FOMO Entry
+                            </label>
+                            <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="trade-mistakes" value="Ignored Stop Loss" style="width: auto; cursor: pointer;"> Ignored Stop Loss
+                            </label>
+                            <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                                <input type="checkbox" name="trade-mistakes" value="Overtrading" style="width: auto; cursor: pointer;"> Overtrading
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="form-group full-width">
@@ -474,6 +559,44 @@
         <img class="modal-content" id="modalImage">
     </div>
 
+    <div id="calendarDayModal" class="modal" style="display: none; align-items: center; justify-content: center; padding: 2rem;">
+        <div class="card" style="width: 100%; max-width: 720px; margin: auto; position: relative; max-height: 85vh; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+            <span class="close" onclick="closeCalendarModal()" style="position: absolute; top: 15px; right: 20px; color: var(--text-main); font-size: 32px;">&times;</span>
+            <h3 id="cal-modal-title" style="margin-bottom: 1.5rem; font-weight: 700; color: var(--text-main);">Execution Details</h3>
+            
+            <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="card" style="padding: 1rem; margin-bottom: 0; background: var(--surface); border: 1px solid var(--border);">
+                    <div class="stat-label" style="font-size: 0.75rem;">Total P&L</div>
+                    <div class="stat-value" id="cal-modal-pl" style="font-size: 1.3rem;">₹0.00</div>
+                </div>
+                <div class="card" style="padding: 1rem; margin-bottom: 0; background: var(--surface); border: 1px solid var(--border);">
+                    <div class="stat-label" style="font-size: 0.75rem;">Total Trades</div>
+                    <div class="stat-value" id="cal-modal-count" style="font-size: 1.3rem; color: var(--text-main);">0</div>
+                </div>
+                <div class="card" style="padding: 1rem; margin-bottom: 0; background: var(--surface); border: 1px solid var(--border);">
+                    <div class="stat-label" style="font-size: 0.75rem;">Win Rate</div>
+                    <div class="stat-value" id="cal-modal-winrate" style="font-size: 1.3rem; color: var(--primary);">0%</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Direction</th>
+                            <th>Qty</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>P/L</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cal-modal-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- 1. Data System & Storage Keys ---
         let trades = JSON.parse(localStorage.getItem('advanced_journal_data_v11'));
@@ -482,10 +605,12 @@
             trades = [];
             const today = new Date();
             const symbols = ["RELIANCE", "HDFCBANK", "INFY", "TCS", "ICICIBANK", "SBIN", "BAJFINANCE"];
+            const demoMistakes = ["Exited Too Early", "FOMO Entry", "Ignored Stop Loss", "Overtrading"];
             
-            for(let i=0; i<20; i++) {
+            // Populating 50 days of examples
+            for(let i=0; i<50; i++) {
                 let d = new Date(today);
-                d.setDate(today.getDate() - (25 - i)); 
+                d.setDate(today.getDate() - (50 - i)); 
                 
                 let isLong = Math.random() > 0.5;
                 let entryP = (Math.random() * 1000 + 500).toFixed(2);
@@ -494,6 +619,10 @@
                 let pl = isLong ? (exitP - entryP) * q : (entryP - exitP) * q;
                 
                 let res = pl > 0 ? "Target" : (pl < -500 ? "SL" : "EE");
+                let mArr = [];
+                if(pl < 0 && Math.random() > 0.4) {
+                    mArr.push(demoMistakes[Math.floor(Math.random() * demoMistakes.length)]);
+                }
 
                 trades.push({
                     date: d.toISOString().split('T')[0],
@@ -506,7 +635,8 @@
                     result: res,
                     pl: pl.toFixed(2),
                     image: null,
-                    comments: "Sample generated trade for demonstration."
+                    comments: "Sample generated trade for demonstration.",
+                    mistakes: mArr
                 });
             }
             localStorage.setItem('advanced_journal_data_v11', JSON.stringify(trades));
@@ -595,7 +725,7 @@
             yearFilter.appendChild(option);
         }
 
-        // --- Navigation ---
+        // --- Navigation Routing ---
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -605,7 +735,7 @@
             
             document.getElementById('filters-container').style.display = (tabId === 'rules') ? 'none' : 'flex';
 
-            if(tabId === 'dashboard') {
+            if(tabId === 'dashboard' || tabId === 'calendar') {
                 setTimeout(() => { applyFilters(); }, 10); 
             }
             
@@ -621,14 +751,15 @@
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             document.getElementById('theme-btn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
-            if(document.getElementById('view-dashboard').classList.contains('active')) applyFilters(); 
+            applyFilters(); 
         }
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('theme-btn').innerText = '☀️';
         }
 
-        let pieChartInstance, resultChartInstance, equityChartInstance, hourlyWinChartInstance;
+        // Chart Global Instance Tracker variables
+        let pieChartInstance, resultChartInstance, equityChartInstance, hourlyWinChartInstance, mistakesChartInstance, dailyPLChartInstance;
 
         ['qty', 'entry', 'exit', 'direction'].forEach(id => {
             document.getElementById(id).addEventListener('input', calculatePL);
@@ -669,9 +800,14 @@
                 indicator.innerHTML = '';
             }
 
+            // Route refresh processing layers conditionally
             if (!exactDateFilter && document.getElementById('view-dashboard').classList.contains('active')) {
                 updateDashboard(filteredTrades, fYear);
             }
+            if (document.getElementById('view-calendar').classList.contains('active')) {
+                renderCalendar();
+            }
+
             updateTable(filteredTrades);
             renderGallery(filteredTrades);
             renderNotes();
@@ -705,6 +841,8 @@
             const chronoData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
             const dailyMap = {};
             const hourlyMap = {};
+            
+            const mistakeMap = { "No Mistake": 0, "Exited Too Early": 0, "FOMO Entry": 0, "Ignored Stop Loss": 0, "Overtrading": 0 };
 
             chronoData.forEach((t) => {
                 const pl = parseFloat(t.pl);
@@ -724,11 +862,16 @@
                 if(!dailyMap[t.date]) dailyMap[t.date] = 0;
                 dailyMap[t.date] += pl;
 
-                // Hourly stats for Hourly Win % chart
                 let hour = t.time ? t.time.split(':')[0] : "09";
                 if (!hourlyMap[hour]) hourlyMap[hour] = { wins: 0, total: 0 };
                 hourlyMap[hour].total++;
                 if (pl >= 0) hourlyMap[hour].wins++;
+
+                if(t.mistakes && Array.isArray(t.mistakes)){
+                    t.mistakes.forEach(m => {
+                        if(mistakeMap[m] !== undefined) mistakeMap[m]++;
+                    });
+                }
             });
 
             const sortedDates = Object.keys(dailyMap).sort();
@@ -738,8 +881,7 @@
 
             sortedDates.forEach(date => {
                 const dayPl = dailyMap[date];
-                const shortDate = date.substring(5); // MM-DD
-                
+                const shortDate = date.substring(5); 
                 cumulative += dayPl;
                 equityLabels.push(shortDate);
                 equityData.push(cumulative);
@@ -771,18 +913,18 @@
             if (resultChartInstance) resultChartInstance.destroy();
             if (equityChartInstance) equityChartInstance.destroy();
             if (hourlyWinChartInstance) hourlyWinChartInstance.destroy();
+            if (mistakesChartInstance) mistakesChartInstance.destroy();
+            if (dailyPLChartInstance) dailyPLChartInstance.destroy();
 
-            // 1. Cumulative Equity Curve
             equityChartInstance = new Chart(document.getElementById('equityChart').getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: equityLabels.length ? equityLabels : ['-'],
-                    datasets: [{ label: 'Cumulative Performance (₹)', data: equityData.length ? equityData : [0], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.2, pointRadius: 3, borderWidth: 2 }]
+                    datasets: [{ label: 'Cumulative Performance (₹)', data: equityData.length ? equityData : [0], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.06)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2.5 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: {color: textColor}, grid: {color: gridColor} }, y: { ticks: {color: textColor}, grid: {color: gridColor} } }, plugins: { legend: { labels: {color: textColor} } } }
             });
 
-            // 1.5 Hourly Win %
             hourlyWinChartInstance = new Chart(document.getElementById('hourlyWinChart').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -792,14 +934,12 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor}, grid: {display: false} }, y: { max: 100, ticks: {color: textColor}, grid: {color: gridColor} } } }
             });
 
-            // 2. Directional Breakdown
             pieChartInstance = new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'doughnut',
                 data: { labels: ['Longs', 'Shorts'], datasets: [{ data: [longs, shorts], backgroundColor: ['#6366f1', '#f59e0b'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {color: textColor, boxWidth: 12} } } }
+                options: { radius: '99%', layout: { padding: 4 }, responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {color: textColor, boxWidth: 12} } } }
             });
 
-            // 3. Action Outcomes
             resultChartInstance = new Chart(document.getElementById('resultChart').getContext('2d'), {
                 type: 'bar',
                 data: { 
@@ -813,8 +953,180 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor, font: {size: 11}}, grid: {display: false} }, y: { ticks: {color: textColor, stepSize: 1}, grid: {color: gridColor} } } }
             });
 
+            mistakesChartInstance = new Chart(document.getElementById('mistakesChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(mistakeMap),
+                    datasets: [{
+                        label: 'Trades with Mistake',
+                        data: Object.values(mistakeMap),
+                        backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                        borderRadius: 6,
+                        barThickness: 16
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor } },
+                        y: { ticks: { color: textColor } }
+                    }
+                }
+            });
+
+            const last30Dates = sortedDates.slice(-30);
+            const dailyPLColors = last30Dates.map(d => dailyMap[d] >= 0 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(239, 68, 68, 0.85)');
+            
+            dailyPLChartInstance = new Chart(document.getElementById('dailyPLChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: last30Dates.map(d => d.substring(5)),
+                    datasets: [{
+                        label: 'Net Daily P&L (₹)',
+                        data: last30Dates.map(d => dailyMap[d]),
+                        backgroundColor: dailyPLColors,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: textColor }, grid: { display: false } },
+                        y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                    }
+                }
+            });
+
             generateHeatmap(data, filteredYear);
         }
+
+        // --- Dynamic Calendar Engine ---
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid-wrapper');
+            if(!grid) return;
+            grid.innerHTML = '';
+
+            const now = new Date();
+            const fMonth = document.getElementById('filter-month').value;
+            const fYear = document.getElementById('filter-year').value;
+            
+            let year = fYear === 'all' ? now.getFullYear() : parseInt(fYear);
+            let month = fMonth === 'all' ? now.getMonth() : parseInt(fMonth) - 1;
+
+            const dateObj = new Date(year, month, 1);
+            document.getElementById('calendar-title-header').innerText = dateObj.toLocaleString('default', { month: 'long', year: 'numeric' }) + " Trading Calendar";
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day-cell empty';
+                grid.appendChild(emptyCell);
+            }
+
+            const calDayMap = {};
+            trades.forEach(t => {
+                const [ty, tm, td] = t.date.split('-');
+                if(parseInt(ty) === year && parseInt(tm) === (month + 1)) {
+                    if(!calDayMap[t.date]) calDayMap[t.date] = [];
+                    calDayMap[t.date].push(t);
+                }
+            });
+
+            for (let d = 1; d <= totalDays; d++) {
+                const dayStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell';
+
+                const numLabel = document.createElement('div');
+                numLabel.className = 'calendar-day-num';
+                numLabel.innerText = d;
+                cell.appendChild(numLabel);
+
+                if (calDayMap[dayStr]) {
+                    const dayTrades = calDayMap[dayStr];
+                    let dayNet = dayTrades.reduce((acc, curr) => acc + parseFloat(curr.pl || 0), 0);
+
+                    const plLabel = document.createElement('div');
+                    plLabel.className = 'calendar-day-pl';
+                    if(dayNet >= 0) {
+                        plLabel.innerText = `+₹${dayNet.toFixed(2)}`;
+                        plLabel.style.color = 'var(--profit)';
+                    } else {
+                        plLabel.innerText = `-₹${Math.abs(dayNet).toFixed(2)}`;
+                        plLabel.style.color = 'var(--loss)';
+                    }
+                    cell.appendChild(plLabel);
+
+                    const countLabel = document.createElement('div');
+                    countLabel.className = 'calendar-day-trades';
+                    countLabel.innerText = `${dayTrades.length} trade${dayTrades.length > 1 ? 's' : ''}`;
+                    cell.appendChild(countLabel);
+
+                    cell.onclick = () => openCalendarDayPopup(dayStr, dayNet, dayTrades);
+                } else {
+                    const structuralMutedLabel = document.createElement('div');
+                    structuralMutedLabel.className = 'calendar-day-trades';
+                    structuralMutedLabel.innerText = '0 trades';
+                    structuralMutedLabel.style.color = 'var(--text-muted)';
+                    cell.appendChild(structuralMutedLabel);
+                    
+                    cell.onclick = () => openCalendarDayPopup(dayStr, 0, []);
+                }
+
+                grid.appendChild(cell);
+            }
+        }
+
+        // --- Calendar Day Itemized Modal Window Logic ---
+        window.openCalendarDayPopup = function(dateString, netPLValue, dayTradesArray) {
+            document.getElementById('cal-modal-title').innerText = `Trading Details Summary: ${dateString}`;
+            
+            const plContainer = document.getElementById('cal-modal-pl');
+            plContainer.innerText = (netPLValue >= 0 ? '+' : '-') + '₹' + Math.abs(netPLValue).toFixed(2);
+            plContainer.style.color = netPLValue >= 0 ? 'var(--profit)' : 'var(--loss)';
+
+            document.getElementById('cal-modal-count').innerText = dayTradesArray.length;
+
+            const baseWins = dayTradesArray.filter(t => parseFloat(t.pl || 0) >= 0).length;
+            const calWinrate = dayTradesArray.length > 0 ? Math.round((baseWins / dayTradesArray.length) * 100) : 0;
+            document.getElementById('cal-modal-winrate').innerText = `${calWinrate}%`;
+
+            const bodyContainer = document.getElementById('cal-modal-table-body');
+            bodyContainer.innerHTML = '';
+
+            if(dayTradesArray.length === 0) {
+                bodyContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No operational activity recorded on this day.</td></tr>';
+            } else {
+                dayTradesArray.forEach(t => {
+                    const row = document.createElement('tr');
+                    const singlePL = parseFloat(t.pl || 0);
+                    row.innerHTML = `
+                        <td><strong>${t.symbol}</strong></td>
+                        <td><span class="badge neutral">${t.direction}</span></td>
+                        <td>${t.qty}</td>
+                        <td>₹${parseFloat(t.entry).toFixed(2)}</td>
+                        <td>₹${parseFloat(t.exit).toFixed(2)}</td>
+                        <td style="font-weight: 700; color: ${singlePL >= 0 ? 'var(--profit)' : 'var(--loss)'};">
+                            ${singlePL >= 0 ? '+' : '-'}₹${Math.abs(singlePL).toFixed(2)}
+                        </td>
+                    `;
+                    bodyContainer.appendChild(row);
+                });
+            }
+
+            document.getElementById('calendarDayModal').style.display = 'flex';
+        };
+
+        window.closeCalendarModal = function() {
+            document.getElementById('calendarDayModal').style.display = 'none';
+        };
 
         function generateHeatmap(filteredData, selectedYear) {
             const container = document.getElementById('heatmap-container');
@@ -1010,6 +1322,11 @@
             
             calculatePL(); 
 
+            const tradeMistakesList = trade.mistakes || [];
+            document.querySelectorAll('input[name="trade-mistakes"]').forEach(cb => {
+                cb.checked = tradeMistakesList.includes(cb.value);
+            });
+
             document.getElementById('form-title').innerText = "Modify Operational Log Data";
             document.getElementById('submit-btn').innerText = "Update Execution Entry";
             document.getElementById('cancel-edit-btn').style.display = "block";
@@ -1026,6 +1343,8 @@
             setNowTime();
             document.getElementById('pl').value = '';
             
+            document.querySelectorAll('input[name="trade-mistakes"]').forEach(cb => cb.checked = false);
+
             document.getElementById('form-title').innerText = "Log a New Trade";
             document.getElementById('submit-btn').innerText = "Save Trade Log";
             document.getElementById('cancel-edit-btn').style.display = "none";
@@ -1050,8 +1369,9 @@
             }
         });
 
-        // --- Updated saveTradeAction with edit and delete cloud logic ---
         function saveTradeAction(calculatedPl, imageData) {
+            const targetedMistakes = Array.from(document.querySelectorAll('input[name="trade-mistakes"]:checked')).map(cb => cb.value);
+
             const newTrade = {
                 date: document.getElementById('date').value,
                 time: document.getElementById('entry-time').value,
@@ -1063,14 +1383,13 @@
                 result: document.getElementById('result').value,
                 pl: calculatedPl,
                 image: imageData, 
-                comments: document.getElementById('comments').value
+                comments: document.getElementById('comments').value,
+                mistakes: targetedMistakes
             };
 
-            // 1. Update local UI and handle edits
             if (editingIndex !== -1) {
                 const tradeToDelete = trades[editingIndex];
                 
-                // Delete the old version from the cloud before replacing it
                 fetch(scriptURL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'delete', trade: tradeToDelete })
@@ -1084,10 +1403,10 @@
                 document.getElementById('date').valueAsDate = new Date();
                 setNowTime();
                 document.getElementById('pl').value = '';
+                document.querySelectorAll('input[name="trade-mistakes"]').forEach(cb => cb.checked = false);
             }
             saveAndRefresh();
 
-            // 2. Add the new trade to the cloud
             const cloudPayload = { action: 'add', trade: { ...newTrade } };
             delete cloudPayload.trade.image; 
 
@@ -1099,16 +1418,14 @@
             .catch(error => console.error('Cloud sync failed', error));
         }
 
-        // --- Updated deleteTrade with cloud delete logic ---
         window.deleteTrade = function(index) {
             if(confirm("Permanently discard this layout data row?")) {
-                const tradeToDelete = trades[index]; // Grab the data before deleting locally
+                const tradeToDelete = trades[index]; 
                 
                 trades.splice(index, 1);
                 if (editingIndex === index) cancelEdit(); 
                 saveAndRefresh();
 
-                // Send a delete command to the cloud
                 fetch(scriptURL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'delete', trade: tradeToDelete })
@@ -1161,6 +1478,7 @@
             const fYear = document.getElementById('filter-year').value;
             
             const container = document.getElementById('notes-list');
+            if(!container) return;
             container.innerHTML = '';
             
             const sortedDates = Object.keys(dailyNotes).sort((a,b) => new Date(b) - new Date(a));
@@ -1252,7 +1570,10 @@
         const modalImg = document.getElementById("modalImage");
         window.openModal = function(imgSrc) { modal.style.display = "block"; modalImg.src = imgSrc; }
         document.getElementById("closeModal").onclick = function() { modal.style.display = "none"; }
-        window.onclick = function(event) { if (event.target == modal) { modal.style.display = "none"; } }
+        window.onclick = function(event) { 
+            if (event.target == modal) { modal.style.display = "none"; } 
+            if (event.target == document.getElementById('calendarDayModal')) { closeCalendarModal(); }
+        }
 
         function setNowTime() {
             const now = new Date();
@@ -1268,16 +1589,14 @@
         document.getElementById('filter-year').value = currentYear.toString();
         renderRules();
 
-        // Function to pull from Google Sheets
         async function loadCloudTrades() {
             try {
                 const response = await fetch(scriptURL);
                 const data = await response.json();
                 
-                // If data exists (ignoring the header row)
                 if (data && data.length > 1) {
                     trades = data.slice(1).map(row => ({
-                        date: row[0].split('T')[0], // Clean formatting
+                        date: row[0].split('T')[0], 
                         time: row[1],
                         symbol: row[2],
                         direction: row[3],
@@ -1287,20 +1606,19 @@
                         result: row[7],
                         pl: row[8],
                         comments: row[9],
-                        image: null // Images aren't pulled from sheets
+                        image: null,
+                        mistakes: row[10] ? JSON.parse(row[10]) : [] 
                     }));
                     
-                    // Update local storage with fresh cloud data
                     localStorage.setItem('advanced_journal_data_v11', JSON.stringify(trades));
                 }
                 applyFilters(); 
             } catch (error) {
                 console.error("Failed to load from cloud, using local cache.", error);
-                applyFilters(); // Fallback to local data if offline
+                applyFilters(); 
             }
         }
 
-        // Start the app by pulling cloud data
         loadCloudTrades();
 
         if(window.innerWidth <= 768) {
