@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Pro Trading Journal</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,7 +14,7 @@
             --primary-hover: #4f46e5;
             --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             
-            /* Light Theme - Updated to match the Figma lavender gradient */
+            /* Light Theme */
             --bg-gradient: linear-gradient(135deg, #EBE8FA 0%, #DFDBF5 100%);
             --sidebar-gradient: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
             --surface: rgba(255, 255, 255, 0.7); 
@@ -50,15 +51,15 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg-gradient); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: background 0.4s ease, color 0.4s ease; }
+        body { font-family: 'Inter', sans-serif; font-weight: 400; background: var(--bg-gradient); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: background 0.4s ease, color 0.4s ease; }
 
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-gradient); border-right: 1px solid var(--border); padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; z-index: 100; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .brand { font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
-        .nav-item { padding: 0.875rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; text-align: center; justify-content: flex-start;}
+        .nav-item { padding: 0.875rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 500; color: var(--text-muted); transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; text-align: center; justify-content: flex-start;}
         .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .nav-item:hover { background-color: rgba(99, 102, 241, 0.1); color: var(--text-main); }
-        .nav-item.active { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        .nav-item.active { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); font-weight: 600; }
 
         /* Main Content */
         .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding: 2rem; scroll-behavior: smooth; }
@@ -73,7 +74,7 @@
             width: fit-content;
         }
 
-        .filter-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0.2rem 0 0.5rem; }
+        .filter-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0.2rem 0 0.5rem; }
         
         .global-filters select {
             width: auto; padding: 0.35rem 1.5rem 0.35rem 0.8rem; font-size: 0.85rem; font-weight: 500;
@@ -91,14 +92,22 @@
         .theme-toggle { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 0.6rem; border-radius: 99px; cursor: pointer; font-size: 1rem; transition: all 0.2s; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; width: 38px; height: 38px;}
         .theme-toggle:hover { border-color: var(--primary); }
 
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--text-main); }
+
         /* Forms */
-        select, input, textarea { padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); font-size: 16px; transition: 0.2s; width: 100%; }
+        select, input, textarea { padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 400; background-color: var(--input-bg); color: var(--text-main); font-size: 16px; transition: 0.2s; width: 100%; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
-        button.btn-primary { background: var(--primary-gradient); color: white; border: none; padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2); font-size: 16px; }
+        
+        /* Fix Checkbox flicker & styling issues */
+        input[type="checkbox"] { width: auto !important; padding: 0 !important; transition: none !important; box-shadow: none !important; border: none !important; }
+        input[type="checkbox"]:focus { box-shadow: none !important; outline: none !important; }
+
+        button.btn-primary { background: var(--primary-gradient); color: white; border: none; padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2); font-size: 16px; font-family: 'Inter', sans-serif;}
         button.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-        button.btn-secondary { background-color: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 0.5rem; font-size: 16px;}
+        button.btn-secondary { background-color: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 0.5rem; font-size: 16px; font-family: 'Inter', sans-serif;}
         button.btn-secondary:hover { background-color: rgba(99,102,241,0.05); border-color: var(--primary); }
-        button.btn-cancel { background-color: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 16px;}
+        button.btn-cancel { background-color: transparent; color: var(--text-main); border: 1px solid var(--border); padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 16px; font-family: 'Inter', sans-serif;}
         button.btn-cancel:hover { background-color: var(--border); }
 
         /* Views */
@@ -109,9 +118,11 @@
         .card { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03); margin-bottom: 1.25rem; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); }
 
         /* KPIs */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; margin-top: 0.5rem; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Updated stat-value for single line text handling */
+        .stat-value { font-size: clamp(1.2rem, 2vw + 0.5rem, 1.8rem); font-weight: 700; margin-top: 0.5rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: font-size 0.2s ease;}
 
         /* Charts Layout */
         .charts-grid { display: grid; gap: 1rem; margin-bottom: 1.25rem; }
@@ -130,15 +141,15 @@
         .day.tier-green-1 { background-color: #6ee7b7; } .day.tier-green-2 { background-color: #10b981; } .day.tier-green-3 { background-color: #047857; }
         [data-theme="dark"] .day.tier-red-1 { background-color: #991b1b; } [data-theme="dark"] .day.tier-red-2 { background-color: #dc2626; }
         .day.empty { background-color: transparent; }
-        .heatmap-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 1.5rem; }
+        .heatmap-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 1.5rem; font-weight: 500; }
 
         /* Calendar Styles */
         .calendar-day-cell { background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; min-height: 95px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.2s; }
         .calendar-day-cell:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .calendar-day-cell.empty { background: transparent; border: none; cursor: default; }
         .calendar-day-num { font-weight: 600; font-size: 0.9rem; color: var(--text-main); }
-        .calendar-day-pl { font-size: 0.85rem; font-weight: 700; text-align: center; }
-        .calendar-day-trades { font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+        .calendar-day-pl { font-size: 0.85rem; font-weight: 600; text-align: center; }
+        .calendar-day-trades { font-size: 0.75rem; color: var(--text-muted); text-align: center; font-weight: 400; }
 
         /* Forms & Tables */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; align-items: end;}
@@ -157,9 +168,9 @@
         .badge.neutral { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); }
 
         .comment-cell { max-width: 200px; white-space: normal; }
-        .comment-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.875rem; color: var(--text-muted); transition: all 0.2s; }
+        .comment-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.875rem; color: var(--text-muted); transition: all 0.2s; font-weight: 400; }
         .comment-text.expanded { display: block; -webkit-line-clamp: unset; }
-        .toggle-text-btn { background: none; border: none; color: var(--primary); font-size: 0.75rem; cursor: pointer; padding: 0; margin-top: 4px; font-weight: 600; }
+        .toggle-text-btn { background: none; border: none; color: var(--primary); font-size: 0.75rem; cursor: pointer; padding: 0; margin-top: 4px; font-weight: 600; font-family: 'Inter', sans-serif; }
         
         .screenshot-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
         .screenshot-thumb:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -185,7 +196,7 @@
         /* List Items (Rules & Notes) */
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background-color: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1rem; transition: 0.2s; }
         .list-item:hover { transform: translateX(5px); border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .rule-text { font-size: 1rem; font-weight: 500; color: var(--text-main); }
+        .rule-text { font-size: 1rem; font-weight: 400; color: var(--text-main); }
         .rule-number { font-weight: 700; color: var(--primary); margin-right: 15px; font-size: 1.1rem; }
 
         /* File Actions */
@@ -198,7 +209,7 @@
         .close:hover { color: var(--primary); transform: scale(1.1); }
 
         .active-filter-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--primary); color: white; padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;}
-        .active-filter-badge span { cursor: pointer; font-size: 1rem; }
+        .active-filter-badge span { cursor: pointer; font-size: 1rem; font-weight: 700; }
 
         /* Responsive Design */
         @media (max-width: 1024px) {
@@ -310,6 +321,14 @@
 
                 <div class="card stat-card">
                     <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                        Avg R:R Ratio
+                    </div>
+                    <div class="stat-value" id="kpi-rr">1 : 0</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-label" style="display: flex; align-items: center; gap: 6px;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                         Win Rate
                     </div>
@@ -343,7 +362,7 @@
 
             <div class="charts-grid" style="grid-template-columns: 3fr 1fr;">
                 <div class="card" style="margin-bottom: 0;">
-                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight: 700;">Cumulative Performance Curve</h3>
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem;">Cumulative Performance Curve</h3>
                     <div class="chart-container" style="height: 320px;"><canvas id="equityChart"></canvas></div>
                 </div>
                 <div class="card" style="margin-bottom: 0;">
@@ -354,7 +373,7 @@
 
             <div class="charts-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
                 <div class="card">
-                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight:700;">Most Common Mistakes Made</h3>
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem;">Most Common Mistakes Made</h3>
                     <div class="chart-container" style="height: 280px;"><canvas id="mistakesChart"></canvas></div>
                 </div>
                 <div class="card">
@@ -369,13 +388,35 @@
                     <div class="chart-container" style="height: 280px;"><canvas id="pieChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h3 style="margin-bottom: 1rem; font-size: 1rem; font-weight:700;">Daily P&L Performance (Last 30 Days)</h3>
+                    <h3 style="margin-bottom: 1rem; font-size: 1rem;">Daily P&L Performance (Last 30 Days)</h3>
                     <div class="chart-container" style="height: 280px;"><canvas id="dailyPLChart"></canvas></div>
                 </div>
             </div>
 
+            <div class="charts-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Strategy Used</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="strategyChart"></canvas></div>
+                </div>
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Stock Selection</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="stockSelectionChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="charts-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Profit by Strategy</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="profitStrategyChart"></canvas></div>
+                </div>
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-bottom: 1rem; text-align: center; font-size: 1rem;">Profit by Stock Selection</h3>
+                    <div class="chart-container" style="height: 280px;"><canvas id="profitSelectionChart"></canvas></div>
+                </div>
+            </div>
+
             <div class="card">
-                <h3 style="margin-bottom: 1.5rem;">Profit & Loss Heatmap <span style="font-size:0.8rem; color:var(--text-muted); font-weight:normal;">(Tap a day to view logs)</span></h3>
+                <h3 style="margin-bottom: 1.5rem;">Profit & Loss Heatmap <span style="font-size:0.8rem; color:var(--text-muted); font-weight:400;">(Tap a day to view logs)</span></h3>
                 <div id="heatmap-container" class="heatmap-wrapper"></div>
                 <div class="heatmap-legend">
                     <div style="display:flex; align-items:center; gap:5px;"><div class="day tier-red-3"></div> Max Loss</div>
@@ -387,8 +428,8 @@
 
         <section id="view-calendar" class="view-section">
             <div class="card">
-                <h3 id="calendar-title-header" style="margin-bottom: 1.5rem; text-align: center; font-weight: 700; color: var(--text-main);">Trading Calendar</h3>
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 12px;">
+                <h3 id="calendar-title-header" style="margin-bottom: 1.5rem; text-align: center; color: var(--text-main);">Trading Calendar</h3>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 12px;">
                     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                 </div>
                 <div id="calendar-grid-wrapper" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;"></div>
@@ -413,6 +454,7 @@
                             <option value="Short">Short</option>
                         </select>
                     </div>
+                    
                     <div class="form-group"><label>Quantity</label><input type="number" step="any" id="qty" required></div>
                     <div class="form-group"><label>Entry Price (₹)</label><input type="number" step="any" id="entry" required></div>
                     <div class="form-group"><label>Exit Price (₹)</label><input type="number" step="any" id="exit" required></div>
@@ -430,31 +472,41 @@
 
                     <div class="form-group">
                         <label>Net P/L (₹)</label>
-                        <input type="text" id="pl" readonly placeholder="Auto-calculated" style="background: var(--border); font-weight: bold;">
+                        <input type="text" id="pl" readonly placeholder="Auto-calculated" style="background: var(--border); font-weight: 700;">
                     </div>
                     
                     <div class="form-group">
-                        <label>Screenshot <span id="edit-img-notice" style="display:none; color:var(--warning); font-size:0.75rem;">(Leaves old image if blank)</span></label>
+                        <label>Strategy Used</label>
+                        <select id="strategy" onchange="handleDropdownChange('strategy', 'pro_journal_strategies', 'Edit Strategies...')"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Selection Method</label>
+                        <select id="stock-selection" onchange="handleDropdownChange('stock-selection', 'pro_journal_stock_methods', 'Edit Methods...')"></select>
+                    </div>
+                    <div class="form-group"><label>Risk Reward Ratio (1:X)</label><input type="number" step="any" id="rr-ratio" placeholder="e.g. 2 for 1:2" required></div>
+
+                    <div class="form-group">
+                        <label>Screenshot <span id="edit-img-notice" style="display:none; color:var(--warning); font-size:0.75rem; font-weight: 400;">(Leaves old image if blank)</span></label>
                         <input type="file" id="screenshot" accept="image/*">
                     </div>
 
                     <div class="form-group full-width" style="background: rgba(99,102,241,0.04); padding: 1rem; border-radius: 8px; border: 1px dashed var(--border);">
-                        <label style="color: var(--primary); font-weight: 700;">Mistakes Made Execution Flags</label>
+                        <label style="color: var(--primary);">Mistakes Made Execution Flags</label>
                         <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
                             <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(16, 185, 129, 0.12); color: #10b981; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.25);">
-                                <input type="checkbox" name="trade-mistakes" value="No Mistake" style="width: auto; cursor: pointer; accent-color: #10b981;"> No Mistake
+                                <input type="checkbox" name="trade-mistakes" value="No Mistake"> No Mistake
                             </label>
                             <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(59, 130, 246, 0.12); color: #3b82f6; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.25);">
-                                <input type="checkbox" name="trade-mistakes" value="Exited Too Early" style="width: auto; cursor: pointer; accent-color: #3b82f6;"> Exited Too Early
+                                <input type="checkbox" name="trade-mistakes" value="Exited Too Early"> Exited Too Early
                             </label>
                             <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(139, 92, 246, 0.12); color: #8b5cf6; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.25);">
-                                <input type="checkbox" name="trade-mistakes" value="FOMO Entry" style="width: auto; cursor: pointer; accent-color: #8b5cf6;"> FOMO Entry
+                                <input type="checkbox" name="trade-mistakes" value="FOMO Entry"> FOMO Entry
                             </label>
                             <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(239, 68, 68, 0.12); color: #ef4444; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.25);">
-                                <input type="checkbox" name="trade-mistakes" value="Ignored Stop Loss" style="width: auto; cursor: pointer; accent-color: #ef4444;"> Ignored Stop Loss
+                                <input type="checkbox" name="trade-mistakes" value="Ignored Stop Loss"> Ignored Stop Loss
                             </label>
                             <label style="font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; background: rgba(249, 115, 22, 0.12); color: #f97316; padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(249, 115, 22, 0.25);">
-                                <input type="checkbox" name="trade-mistakes" value="Overtrading" style="width: auto; cursor: pointer; accent-color: #f97316;"> Overtrading
+                                <input type="checkbox" name="trade-mistakes" value="Overtrading"> Overtrading
                             </label>
                         </div>
                     </div>
@@ -497,6 +549,8 @@
                                 <th>Qty</th>
                                 <th>Entry</th>
                                 <th>Exit</th>
+                                <th>Strategy / Sel</th>
+                                <th>R:R</th>
                                 <th>Result</th>
                                 <th>P / L</th>
                                 <th>Mistakes</th>
@@ -563,8 +617,8 @@
 
     <div id="calendarDayModal" class="modal" style="display: none; align-items: center; justify-content: center; padding: 2rem;">
         <div class="card" style="width: 100%; max-width: 720px; margin: auto; position: relative; max-height: 85vh; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
-            <span class="close" onclick="closeCalendarModal()" style="position: absolute; top: 15px; right: 20px; color: var(--text-main); font-size: 32px;">&times;</span>
-            <h3 id="cal-modal-title" style="margin-bottom: 1.5rem; font-weight: 700; color: var(--text-main);">Execution Details</h3>
+            <span class="close" onclick="closeCalendarModal()" style="position: absolute; top: 15px; right: 20px; color: var(--text-main); font-size: 32px; font-weight: 700;">&times;</span>
+            <h3 id="cal-modal-title" style="margin-bottom: 1.5rem; color: var(--text-main);">Execution Details</h3>
             
             <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
                 <div class="card" style="padding: 1rem; margin-bottom: 0; background: var(--surface); border: 1px solid var(--border);">
@@ -602,7 +656,9 @@
     <script>
         // --- 1. Data System & Storage Keys ---
         let trades = JSON.parse(localStorage.getItem('advanced_journal_data_v11'));
-        
+        let customStrategies = JSON.parse(localStorage.getItem('pro_journal_strategies')) || ["Breakout", "Pullback", "Reversal", "Trend Following"];
+        let customStockMethods = JSON.parse(localStorage.getItem('pro_journal_stock_methods')) || ["Top Gainers", "Top Losers", "Volume Spikes", "Pre-market Scanner"];
+
         if (!trades || trades.length === 0) {
             trades = [];
             const today = new Date();
@@ -628,6 +684,9 @@
                     time: "10:30",
                     symbol: symbols[Math.floor(Math.random()*symbols.length)],
                     direction: isLong ? "Long" : "Short",
+                    strategy: customStrategies[Math.floor(Math.random()*customStrategies.length)],
+                    stockSelection: customStockMethods[Math.floor(Math.random()*customStockMethods.length)],
+                    rrRatio: (Math.random() * 2 + 1).toFixed(1),
                     qty: q,
                     entry: entryP,
                     exit: exitP,
@@ -722,6 +781,45 @@
             yearFilter.appendChild(option);
         }
 
+        // --- Custom Dropdown Methods ---
+        function populateDropdown(selectId, items, actionText) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '';
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item; 
+                opt.innerText = item;
+                select.appendChild(opt);
+            });
+            const actionOpt = document.createElement('option');
+            actionOpt.value = '__action__';
+            actionOpt.innerText = actionText;
+            actionOpt.style.fontWeight = '700';
+            actionOpt.style.color = 'var(--primary)';
+            select.appendChild(actionOpt);
+        }
+
+        window.handleDropdownChange = function(selectId, storageKey, actionText) {
+            const select = document.getElementById(selectId);
+            if (select.value === '__action__') {
+                let items = JSON.parse(localStorage.getItem(storageKey)) || [];
+                const newItemsStr = prompt(`Edit ${selectId.replace('-', ' ')} options (comma separated):`, items.join(', '));
+                
+                if (newItemsStr !== null && newItemsStr.trim() !== '') {
+                    // Split, clean whitespace, and filter out empties
+                    items = newItemsStr.split(',').map(s => s.trim()).filter(s => s);
+                    if(items.length > 0) {
+                        localStorage.setItem(storageKey, JSON.stringify(items));
+                        if(selectId === 'strategy') customStrategies = items;
+                        if(selectId === 'stock-selection') customStockMethods = items;
+                    }
+                }
+                
+                populateDropdown(selectId, items, actionText);
+                select.value = items.length > 0 ? items[0] : '';
+            }
+        };
+
         // --- Navigation Routing ---
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -757,6 +855,7 @@
 
         // Chart Global Instance Tracker variables
         let pieChartInstance, resultChartInstance, equityChartInstance, hourlyWinChartInstance, mistakesChartInstance, dailyPLChartInstance;
+        let strategyChartInstance, stockSelectionChartInstance, profitStrategyChartInstance, profitSelectionChartInstance;
 
         ['qty', 'entry', 'exit', 'direction'].forEach(id => {
             document.getElementById(id).addEventListener('input', calculatePL);
@@ -833,12 +932,16 @@
             let netPl = 0, maxProfit = 0, maxLoss = 0;
             let longs = 0, shorts = 0, wins = 0, losses = 0;
             let resTarget = 0, resSL = 0, resTSL = 0, resEE = 0, resOther = 0;
+            let totalRR = 0, rrCount = 0;
 
             const chronoData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
             const dailyMap = {};
             const hourlyMap = {};
-            
             const mistakeMap = { "No Mistake": 0, "Exited Too Early": 0, "FOMO Entry": 0, "Ignored Stop Loss": 0, "Overtrading": 0 };
+            const strategyMap = {};
+            const stockMethodMap = {};
+            const strategyPlMap = {};      
+            const stockMethodPlMap = {};   
 
             chronoData.forEach((t) => {
                 const pl = parseFloat(t.pl);
@@ -848,6 +951,20 @@
                 
                 t.direction === 'Long' ? longs++ : shorts++;
                 pl >= 0 ? wins++ : losses++;
+
+                if(t.rrRatio && parseFloat(t.rrRatio) > 0) {
+                    totalRR += parseFloat(t.rrRatio);
+                    rrCount++;
+                }
+
+                if(t.strategy) { 
+                    strategyMap[t.strategy] = (strategyMap[t.strategy] || 0) + 1; 
+                    strategyPlMap[t.strategy] = (strategyPlMap[t.strategy] || 0) + parseFloat(t.pl);
+                }
+                if(t.stockSelection) { 
+                    stockMethodMap[t.stockSelection] = (stockMethodMap[t.stockSelection] || 0) + 1; 
+                    stockMethodPlMap[t.stockSelection] = (stockMethodPlMap[t.stockSelection] || 0) + parseFloat(t.pl);
+                }
 
                 if(t.result === 'Target') resTarget++;
                 else if(t.result === 'SL') resSL++;
@@ -893,16 +1010,30 @@
 
             const totalResolved = wins + losses;
             const winRate = totalResolved > 0 ? Math.round((wins / totalResolved) * 100) : 0;
+            const avgRR = rrCount > 0 ? (totalRR / rrCount).toFixed(2) : 0;
 
             document.getElementById('kpi-trades').innerText = data.length;
+            document.getElementById('kpi-rr').innerText = `1 : ${avgRR}`;
             document.getElementById('kpi-winrate').innerText = `${winRate}%`;
             
             const netPlClass = netPl >= 0 ? 'var(--profit)' : 'var(--loss)';
             
-            // UPDATED: Removed + and - signs here for strictly rendering the value
-            document.getElementById('kpi-net').innerHTML = `<span style="color: ${netPlClass}">₹${Math.abs(netPl).toFixed(2)}</span>`;
-            document.getElementById('kpi-high').innerText = `₹${maxProfit.toFixed(2)}`;
-            document.getElementById('kpi-loss').innerText = `₹${Math.abs(maxLoss).toFixed(2)}`;
+            // Dynamic sizing helper for long values
+            function getDynamicSize(text) {
+                const len = text.length;
+                if (len < 8) return 'clamp(1.2rem, 2vw + 0.5rem, 1.8rem)';
+                if (len < 11) return 'clamp(1rem, 1.5vw + 0.5rem, 1.4rem)';
+                if (len < 14) return 'clamp(0.85rem, 1vw + 0.5rem, 1.1rem)';
+                return 'clamp(0.7rem, 0.8vw + 0.4rem, 0.85rem)';
+            }
+            
+            const netStr = `₹${Math.abs(netPl).toFixed(2)}`;
+            const highStr = `₹${maxProfit.toFixed(2)}`;
+            const lossStr = `₹${Math.abs(maxLoss).toFixed(2)}`;
+
+            document.getElementById('kpi-net').innerHTML = `<span style="color: ${netPlClass}; font-size: ${getDynamicSize(netStr)}; display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${netStr}</span>`;
+            document.getElementById('kpi-high').innerHTML = `<span style="font-size: ${getDynamicSize(highStr)}; display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${highStr}</span>`;
+            document.getElementById('kpi-loss').innerHTML = `<span style="font-size: ${getDynamicSize(lossStr)}; display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${lossStr}</span>`;
 
             const textColor = getComputedStyle(document.body).getPropertyValue('--text-main');
             const gridColor = getComputedStyle(document.body).getPropertyValue('--border');
@@ -913,6 +1044,62 @@
             if (hourlyWinChartInstance) hourlyWinChartInstance.destroy();
             if (mistakesChartInstance) mistakesChartInstance.destroy();
             if (dailyPLChartInstance) dailyPLChartInstance.destroy();
+            if (strategyChartInstance) strategyChartInstance.destroy();
+            if (stockSelectionChartInstance) stockSelectionChartInstance.destroy();
+            if (profitStrategyChartInstance) profitStrategyChartInstance.destroy();
+            if (profitSelectionChartInstance) profitSelectionChartInstance.destroy();
+
+            strategyChartInstance = new Chart(document.getElementById('strategyChart').getContext('2d'), {
+                type: 'pie',
+                data: { labels: Object.keys(strategyMap), datasets: [{ data: Object.values(strategyMap), backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#0ea5e9'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {color: textColor, font: {family: 'Inter', weight: 600}} } } }
+            });
+
+            stockSelectionChartInstance = new Chart(document.getElementById('stockSelectionChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(stockMethodMap), datasets: [{ data: Object.values(stockMethodMap), backgroundColor: ['#3b82f6', '#14b8a6', '#f97316', '#a855f7', '#f43f5e', '#84cc16'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {color: textColor, font: {family: 'Inter', weight: 600}} } } }
+            });
+
+            profitStrategyChartInstance = new Chart(document.getElementById('profitStrategyChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(strategyPlMap),
+                    datasets: [{
+                        label: 'Net P&L (₹)',
+                        data: Object.values(strategyPlMap),
+                        backgroundColor: Object.values(strategyPlMap).map(v => v >= 0 ? 'rgba(16, 185, 129, 0.85)' : 'rgba(239, 68, 68, 0.85)'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { display: false } },
+                        y: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { color: gridColor } }
+                    }
+                }
+            });
+
+            profitSelectionChartInstance = new Chart(document.getElementById('profitSelectionChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(stockMethodPlMap),
+                    datasets: [{
+                        label: 'Net P&L (₹)',
+                        data: Object.values(stockMethodPlMap),
+                        backgroundColor: Object.values(stockMethodPlMap).map(v => v >= 0 ? 'rgba(59, 130, 246, 0.85)' : 'rgba(239, 68, 68, 0.85)'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { display: false } },
+                        y: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { color: gridColor } }
+                    }
+                }
+            });
 
             equityChartInstance = new Chart(document.getElementById('equityChart').getContext('2d'), {
                 type: 'line',
@@ -920,7 +1107,7 @@
                     labels: equityLabels.length ? equityLabels : ['-'],
                     datasets: [{ label: 'Cumulative Performance (₹)', data: equityData.length ? equityData : [0], borderColor: '#6366f1', backgroundColor: 'rgba(99, 102, 241, 0.06)', fill: true, tension: 0.2, pointRadius: 4, borderWidth: 2.5 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: {color: textColor}, grid: {color: gridColor} }, y: { ticks: {color: textColor}, grid: {color: gridColor} } }, plugins: { legend: { labels: {color: textColor} } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: {color: textColor, font: {family: 'Inter', weight: 400}}, grid: {color: gridColor} }, y: { ticks: {color: textColor, font: {family: 'Inter', weight: 400}}, grid: {color: gridColor} } }, plugins: { legend: { labels: {color: textColor, font: {family: 'Inter', weight: 600}} } } }
             });
 
             hourlyWinChartInstance = new Chart(document.getElementById('hourlyWinChart').getContext('2d'), {
@@ -929,13 +1116,13 @@
                     labels: hourlyLabels.length ? hourlyLabels : ['-'],
                     datasets: [{ label: 'Win Rate (%)', data: hourlyData.length ? hourlyData : [0], backgroundColor: '#10b981', borderRadius: 4 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor}, grid: {display: false} }, y: { max: 100, ticks: {color: textColor}, grid: {color: gridColor} } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor, font: {family: 'Inter', weight: 400}}, grid: {display: false} }, y: { max: 100, ticks: {color: textColor, font: {family: 'Inter', weight: 400}}, grid: {color: gridColor} } } }
             });
 
             pieChartInstance = new Chart(document.getElementById('pieChart').getContext('2d'), {
                 type: 'doughnut',
                 data: { labels: ['Longs', 'Shorts'], datasets: [{ data: [longs, shorts], backgroundColor: ['#6366f1', '#f59e0b'], borderWidth: 0 }] },
-                options: { radius: '99%', layout: { padding: 4 }, responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {color: textColor, boxWidth: 12} } } }
+                options: { radius: '99%', layout: { padding: 4 }, responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {color: textColor, boxWidth: 12, font: {family: 'Inter', weight: 600}} } } }
             });
 
             resultChartInstance = new Chart(document.getElementById('resultChart').getContext('2d'), {
@@ -948,7 +1135,7 @@
                         borderRadius: 4 
                     }] 
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor, font: {size: 11}}, grid: {display: false} }, y: { ticks: {color: textColor, stepSize: 1}, grid: {color: gridColor} } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: {color: textColor, font: {size: 11, family: 'Inter', weight: 400}}, grid: {display: false} }, y: { ticks: {color: textColor, stepSize: 1, font: {family: 'Inter', weight: 400}}, grid: {color: gridColor} } } }
             });
 
             mistakesChartInstance = new Chart(document.getElementById('mistakesChart').getContext('2d'), {
@@ -969,8 +1156,8 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor } },
-                        y: { ticks: { color: textColor } }
+                        x: { ticks: { color: textColor, stepSize: 1, font: {family: 'Inter', weight: 400} }, grid: { color: gridColor } },
+                        y: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} } }
                     }
                 }
             });
@@ -994,8 +1181,8 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: textColor }, grid: { display: false } },
-                        y: { ticks: { color: textColor }, grid: { color: gridColor } }
+                        x: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { display: false } },
+                        y: { ticks: { color: textColor, font: {family: 'Inter', weight: 400} }, grid: { color: gridColor } }
                     }
                 }
             });
@@ -1111,7 +1298,7 @@
                         <td>${t.qty}</td>
                         <td>₹${parseFloat(t.entry).toFixed(2)}</td>
                         <td>₹${parseFloat(t.exit).toFixed(2)}</td>
-                        <td style="font-weight: 700; color: ${singlePL >= 0 ? 'var(--profit)' : 'var(--loss)'};">
+                        <td style="font-weight: 600; color: ${singlePL >= 0 ? 'var(--profit)' : 'var(--loss)'};">
                             ${singlePL >= 0 ? '+' : '-'}₹${Math.abs(singlePL).toFixed(2)}
                         </td>
                     `;
@@ -1262,7 +1449,6 @@
                 if(trade.result === 'Target' || trade.result === 'TSL') resultClass = 'profit';
                 if(trade.result === 'SL' || trade.result === 'EE') resultClass = 'loss';
 
-                // Fix: Sanitize Time Display
                 let displayTime = trade.time || "09:15";
                 if (displayTime.includes("1899-12-30")) {
                     const d = new Date(displayTime);
@@ -1278,7 +1464,7 @@
                 const originalIndex = trades.indexOf(trade);
                 const safeComment = trade.comments ? trade.comments.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '-';
                 
-                // Mistakes Logic (Separate Column)
+                // Mistakes Logic
                 const tradeMistakesList = trade.mistakes || [];
                 let mistakesHtml = '';
                 if (tradeMistakesList.length > 0) {
@@ -1304,12 +1490,17 @@
                 const delIcon = `<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
 
                 tr.innerHTML = `
-                    <td>${trade.date} <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">(${displayTime})</span></td>
+                    <td>${trade.date} <span style="font-size:0.8rem; color:var(--text-muted); font-weight: 400;">(${displayTime})</span></td>
                     <td><strong>${trade.symbol.toUpperCase()}</strong></td>
                     <td>${trade.direction}</td>
                     <td>${trade.qty || '-'}</td>
                     <td>₹${trade.entry}</td>
                     <td>₹${trade.exit}</td>
+                    <td>
+                        <div style="font-size: 0.8rem; margin-bottom: 2px;">Strat: ${trade.strategy || '-'}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Sel: ${trade.stockSelection || '-'}</div>
+                    </td>
+                    <td>${trade.rrRatio ? `1 : ${trade.rrRatio}` : '-'}</td>
                     <td><span class="badge ${resultClass}">${trade.result || '-'}</span></td>
                     <td><span class="badge ${plClass}">${plFormatted}</span></td>
                     <td class="comment-cell">${mistakesHtml}</td>
@@ -1341,6 +1532,9 @@
             document.getElementById('entry-time').value = trade.time || "09:15";
             document.getElementById('symbol').value = trade.symbol;
             document.getElementById('direction').value = trade.direction;
+            document.getElementById('strategy').value = trade.strategy || customStrategies[0];
+            document.getElementById('stock-selection').value = trade.stockSelection || customStockMethods[0];
+            document.getElementById('rr-ratio').value = trade.rrRatio || '';
             document.getElementById('qty').value = trade.qty;
             document.getElementById('entry').value = trade.entry;
             document.getElementById('exit').value = trade.exit;
@@ -1405,6 +1599,9 @@
                 time: document.getElementById('entry-time').value,
                 symbol: document.getElementById('symbol').value.toUpperCase().trim(),
                 direction: document.getElementById('direction').value,
+                strategy: document.getElementById('strategy').value,
+                stockSelection: document.getElementById('stock-selection').value,
+                rrRatio: parseFloat(document.getElementById('rr-ratio').value) || 0,
                 qty: document.getElementById('qty').value,
                 entry: parseFloat(document.getElementById('entry').value).toFixed(2),
                 exit: parseFloat(document.getElementById('exit').value).toFixed(2),
@@ -1647,6 +1844,9 @@
         document.getElementById('note-date').valueAsDate = new Date();
         setNowTime();
         document.getElementById('filter-year').value = currentYear.toString();
+        
+        populateDropdown('strategy', customStrategies, 'Edit Strategies...');
+        populateDropdown('stock-selection', customStockMethods, 'Edit Methods...');
         renderRules();
 
         async function loadCloudTrades() {
@@ -1688,7 +1888,10 @@
                             pl: row[8],
                             comments: row[9],
                             image: localMatch ? localMatch.image : null,
-                            mistakes: parsedMistakes.length > 0 ? parsedMistakes : (localMatch ? localMatch.mistakes : [])
+                            mistakes: parsedMistakes.length > 0 ? parsedMistakes : (localMatch ? localMatch.mistakes : []),
+                            strategy: localMatch && localMatch.strategy ? localMatch.strategy : customStrategies[0],
+                            stockSelection: localMatch && localMatch.stockSelection ? localMatch.stockSelection : customStockMethods[0],
+                            rrRatio: localMatch && localMatch.rrRatio ? localMatch.rrRatio : 0
                         };
                     });
                     
